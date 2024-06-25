@@ -54,7 +54,7 @@ CCCCCCCCCCCCCCCC`,
   ],
 );
 
-setSolids([]);
+setSolids([player, floor]);
 
 onInput("w", () => {
   getFirst(player).y -= 1;
@@ -72,6 +72,15 @@ onInput("d", () => {
   getFirst(player).x += 1;
 });
 
+const makeThePlayerMove = () => {
+  setTimeout(() => {
+    getFirst(player).x += 1;
+    makeThePlayerMove();
+  }, 1000); // 1000 milliseconds = 1 second
+};
+
+makeThePlayerMove();
+
 let level = 0;
 const levels = [
   map`
@@ -87,10 +96,6 @@ setMap(currentLevel);
 
 setPushables({
   [player]: [],
-});
-
-onInput("s", () => {
-  getFirst(player).y += 1;
 });
 
 afterInput(() => {});
