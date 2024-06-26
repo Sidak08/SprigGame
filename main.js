@@ -11,6 +11,15 @@ https://sprig.hackclub.com/gallery/getting_started
 const player = "p";
 const floor = "f";
 
+const layer = [
+  [".....ffff"],
+  ["........."],
+  ["........."],
+  ["........."],
+  ["..p......"],
+  ["ffff....."],
+]
+
 setLegend(
   [
     player,
@@ -35,6 +44,7 @@ setLegend(
   [
     floor,
     bitmap`
+
 CCCCCCCCCCCCCCCC
 C99999999999999C
 C9CCCCCCCCCCCC9C
@@ -56,6 +66,16 @@ CCCCCCCCCCCCCCCC`,
 
 setSolids([player, floor]);
 
+const levels = [
+  map`
+${layer[0]}
+${layer[1]}
+${layer[2]}
+${layer[3]}
+${layer[4]}
+${layer[5]}`,
+];
+
 onInput("w", () => {
   getFirst(player).y -= 1;
 });
@@ -72,25 +92,28 @@ onInput("d", () => {
   getFirst(player).x += 1;
 });
 
-const makeThePlayerMove = () => {
+const moveTheBackGround = () => {
   setTimeout(() => {
-    getFirst(player).x += 1;
-    makeThePlayerMove();
+    for (let i = 0; i < layer.length; i++){
+      const ogStr = layer[i]
+      let newStr = ""
+      //console.log(ogStr, ogStr[0].length)
+      for (let j = 1; j < ogStr[0].length; j++){
+        //console.log(ogStr[0][j])
+        newStr.concat(ogStr[0][j])
+      }
+      newStr += "."
+      layer[i] = newStr
+    }
+    moveTheBackGround()
+    console.log(layer)
   }, 1000); // 1000 milliseconds = 1 second
-};
+}
 
-makeThePlayerMove();
+moveTheBackGround()
 
 let level = 0;
-const levels = [
-  map`
-.......ffffffffffffff
-.....................
-.....................
-.....................
-.p...................
-fffffffffff..........`,
-];
+
 const currentLevel = levels[level];
 setMap(currentLevel);
 
