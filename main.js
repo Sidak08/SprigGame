@@ -11,15 +11,6 @@ https://sprig.hackclub.com/gallery/getting_started
 const player = "p";
 const floor = "f";
 
-const layer = [
-  [".....ffff"],
-  ["........."],
-  ["........."],
-  ["........."],
-  ["..p......"],
-  ["ffff....."],
-]
-
 setLegend(
   [
     player,
@@ -64,8 +55,14 @@ CCCCCCCCCCCCCCCC`,
   ],
 );
 
-setSolids([player, floor]);
-
+let layer = [
+  [".....ffff"],
+  ["........."],
+  ["........."],
+  ["........."],
+  ["..p......"],
+  ["ffff....."],
+];
 const levels = [
   map`
 ${layer[0]}
@@ -75,6 +72,42 @@ ${layer[3]}
 ${layer[4]}
 ${layer[5]}`,
 ];
+let level = 0;
+let currentLevel = levels[level];
+setMap(currentLevel);
+setSolids([player, floor]);
+
+const moveTheBackGround = () => {
+  setTimeout(() => {
+    for (let i = 0; i < layer.length; i++) {
+      const ogStr = layer[i][0];
+      let newStr = "";
+
+      for (let j = 1; j < ogStr.length; j++) {
+        if (j === 1 && i === 4) {
+          newStr += "p";
+        } else {
+          newStr += ogStr[j];
+        }
+      }
+
+      newStr += ".";
+      layer[i] = [newStr];
+    }
+    currentLevel = `
+${layer[0]}
+${layer[1]}
+${layer[2]}
+${layer[3]}
+${layer[4]}
+${layer[5]}`;
+    setMap(currentLevel);
+    moveTheBackGround();
+    console.log("layer", layer);
+  }, 1000); //
+};
+
+moveTheBackGround();
 
 onInput("w", () => {
   getFirst(player).y -= 1;
@@ -91,31 +124,6 @@ onInput("s", () => {
 onInput("d", () => {
   getFirst(player).x += 1;
 });
-
-const moveTheBackGround = () => {
-  setTimeout(() => {
-    for (let i = 0; i < layer.length; i++){
-      const ogStr = layer[i]
-      let newStr = ""
-      //console.log(ogStr, ogStr[0].length)
-      for (let j = 1; j < ogStr[0].length; j++){
-        //console.log(ogStr[0][j])
-        newStr.concat(ogStr[0][j])
-      }
-      newStr += "."
-      layer[i] = newStr
-    }
-    moveTheBackGround()
-    console.log(layer)
-  }, 1000); // 1000 milliseconds = 1 second
-}
-
-moveTheBackGround()
-
-let level = 0;
-
-const currentLevel = levels[level];
-setMap(currentLevel);
 
 setPushables({
   [player]: [],
