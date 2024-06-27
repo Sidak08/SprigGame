@@ -10,6 +10,11 @@ https://sprig.hackclub.com/gallery/getting_started
 
 const player = "p";
 const floor = "f";
+let counter = 0;
+let platform = 0;
+let lenCounter = 0;
+let lenCounterLimit = 5;
+console.log("resetting counter");
 
 setLegend(
   [
@@ -60,7 +65,7 @@ let layer = [
   ["........."],
   ["........."],
   ["........."],
-  ["..p......"],
+  ["..p..f..."],
   ["ffff....."],
 ];
 const levels = [
@@ -77,23 +82,48 @@ let currentLevel = levels[level];
 setMap(currentLevel);
 setSolids([player, floor]);
 
+const genNextPlat = (id) => {
+  counter += 1;
+  //console.log("counter", counter)
+  if (counter == 6) {
+    counter = 0;
+    lenCounter += 1;
+
+    if (lenCounterLimit === lenCounter) {
+      lenCounterLimit = Math.floor(Math.random() * 3) + 2;
+      lenCounter = 0;
+      platform = Math.floor(Math.random() * 6);
+    }
+
+    //make a better alorithem
+    //console.log("platform", platform)
+  }
+
+  console.log("check vals", id, platform);
+  if (id === platform) {
+    return "f";
+  } else {
+    return ".";
+  }
+};
+
 const moveTheBackGround = () => {
   setTimeout(() => {
     for (let i = 0; i < layer.length; i++) {
       const ogStr = layer[i][0];
       let newStr = "";
-
-      for (let j = 1; j < ogStr.length; j++) {
-        if (j === 1 && i === 4) {
-          newStr += "p";
-        } else {
+      if (ogStr.includes("p")) {
+        newStr = `${ogStr[1]}${ogStr[3]}${ogStr[2]}${ogStr[4]}${ogStr[5]}${ogStr[6]}${ogStr[7]}${ogStr[8]}${genNextPlat(i)}`;
+        //console.log(newStr)
+      } else {
+        for (let j = 1; j < ogStr.length; j++) {
           newStr += ogStr[j];
         }
+        newStr += `${genNextPlat(i)}`;
       }
-
-      newStr += ".";
       layer[i] = [newStr];
     }
+
     currentLevel = `
 ${layer[0]}
 ${layer[1]}
@@ -101,10 +131,11 @@ ${layer[2]}
 ${layer[3]}
 ${layer[4]}
 ${layer[5]}`;
+    //console.log("layer", currentLevel)
     setMap(currentLevel);
     moveTheBackGround();
-    console.log("layer", layer);
-  }, 1000); //
+    //console.log("layer", layer);
+  }, 500);
 };
 
 moveTheBackGround();
@@ -113,16 +144,8 @@ onInput("w", () => {
   getFirst(player).y -= 1;
 });
 
-onInput("a", () => {
-  getFirst(player).x -= 1;
-});
-
 onInput("s", () => {
   getFirst(player).y += 1; // positive y is downwards
-});
-
-onInput("d", () => {
-  getFirst(player).x += 1;
 });
 
 setPushables({
