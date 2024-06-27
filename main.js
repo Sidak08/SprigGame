@@ -14,7 +14,9 @@ let counter = 0;
 let platform = 0;
 let lenCounter = 0;
 let lenCounterLimit = 5;
-console.log("resetting counter");
+let gravity = "up";
+let speed = 500;
+//console.log("resetting counter")
 
 setLegend(
   [
@@ -64,8 +66,8 @@ let layer = [
   [".....ffff"],
   ["........."],
   ["........."],
-  ["........."],
-  ["..p..f..."],
+  ["..p......"],
+  [".....f..."],
   ["ffff....."],
 ];
 const levels = [
@@ -106,6 +108,41 @@ const genNextPlat = (id) => {
     return ".";
   }
 };
+const moveP = (direction) => {
+  let pRow = -1;
+  let pCol = -1;
+  for (let i = 0; i < layer.length; i++) {
+    let col = layer[i][0].indexOf("p");
+    if (col !== -1) {
+      pRow = i;
+      pCol = col;
+      break;
+    }
+  }
+
+  if (pRow === -1 || pCol === -1) {
+    return layer;
+  }
+
+  let newLayer = layer.map((row) => [row[0].split("").join("")]);
+
+  let newRow = direction === "up" ? pRow - 1 : pRow + 1;
+
+  if (
+    newRow >= 0 &&
+    newRow < layer.length &&
+    newLayer[newRow][0][pCol] !== "f"
+  ) {
+    // Move 'p'
+    newLayer[pRow][0] = newLayer[pRow][0].replace("p", ".");
+    newLayer[newRow][0] =
+      newLayer[newRow][0].substr(0, pCol) +
+      "p" +
+      newLayer[newRow][0].substr(pCol + 1);
+  }
+
+  return newLayer;
+};
 
 const moveTheBackGround = () => {
   setTimeout(() => {
@@ -135,17 +172,32 @@ ${layer[5]}`;
     setMap(currentLevel);
     moveTheBackGround();
     //console.log("layer", layer);
-  }, 500);
+  }, speed);
 };
-
 moveTheBackGround();
 
+const makeThePlayerMove = () => {
+  console.log("makeTheMove");
+  setTimeout(() => {
+    if (gravity === "up") {
+      //getFirst(player).y -= 1
+      layer = moveP("up");
+    } else {
+      layer = moveP("down");
+    }
+    makeThePlayerMove();
+  }, speed);
+};
+makeThePlayerMove();
+
 onInput("w", () => {
-  getFirst(player).y -= 1;
+  gravity = "up";
+  layer = moveP("up");
 });
 
 onInput("s", () => {
-  getFirst(player).y += 1; // positive y is downwards
+  gravity = "down";
+  layer = moveP("down");
 });
 
 setPushables({
