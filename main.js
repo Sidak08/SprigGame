@@ -9,16 +9,97 @@ https://sprig.hackclub.com/gallery/getting_started
 */
 
 const player = "p";
+const upSideDownPlayer = "b";
 const floor = "f";
 const red = "r";
+const black = "c";
 let counter = 0;
 let platform = 0;
 let lenCounter = 0;
 let lenCounterLimit = 5;
-let gravity = "up";
+let gravity = "down";
 let speed = 300;
 let hasGameEnded = false;
+let timeTillStart = 5000;
 //console.log("resetting counter")
+
+addText(
+  `
+    How To Play
+
+W to flip gravity
+
+S for opposite
+
+walk on/under block
+
+Do not hit them
+
+or fall in the void
+
+game start in ${timeTillStart / 10}
+  `,
+  {
+    x: 1,
+    y: 1,
+    color: color`2`,
+  },
+);
+
+const myTune = tune`
+100: B5^100 + E4~100,
+100: C4~100 + A5^100 + A4-100 + E4~100,
+100: D4~100 + G5^100 + B4-100 + F4~100,
+100: E4~100 + F5^100 + C5-100 + A5/100 + G4~100,
+100: F4~100 + E5^100 + D5-100 + A5/100 + G5/100,
+100: G4~100 + D5/100 + E5/100 + A4~100 + B4~100,
+100: A4~100 + C5/100 + E5-100 + B4~100,
+100: B4~100 + F5-100 + A4/100,
+100: C5~100 + B4^100 + F5-100 + D4-100 + G4/100,
+100: D5~100 + A4^100 + F5-100 + D4-100 + B4/100,
+100: E5/100 + G4^100 + E4-100 + D5/100,
+100: F5/100 + F4-100 + E5-100 + G5/100,
+100: G5~100 + E4^100 + G4-100 + A5/100,
+100: A5/100 + D4^100 + A4-100 + B5/100,
+100: B5~100 + C4^100 + B4-100 + C5-100 + A5/100,
+100: A5~100 + D4^100 + G5/100 + E4/100 + G4/100,
+100: G5~100 + E4/100 + A4-100 + F5/100 + G4/100,
+100: F5~100 + F4^100 + A4-100 + E5/100 + E4/100,
+100: E5~100 + G4^100 + A4-100 + D5/100 + E4/100,
+100: D5~100 + A4-100 + G5-100 + C5/100 + B4/100,
+100: C5~100 + B4^100 + G5-100 + A4/100 + G4/100,
+100: B4~100 + C5^100 + F5-100 + A4-100 + F4/100,
+100: A4-100 + D5/100 + E5-100 + E4~100 + F4~100,
+100: G4~100 + E5/100 + A4-100 + F4~100,
+100: F4~100 + F5/100 + D5-100 + A4~100,
+100: E4~100 + G5^100 + C5-100 + A4-100 + F5/100,
+100: D4~100 + A5^100 + B4-100 + A4-100 + G5/100,
+100: C4~100 + B5^100 + B4-100 + A4-100 + D5~100,
+100: D4~100 + A5^100 + A4-100 + E5~100 + B5~100,
+100: E4~100 + G5^100 + B5~100 + A5~100,
+100: F4~100 + F5^100 + G5~100,
+100: G4~100 + E5^100 + G5~100 + F5~100`;
+const die = tune`
+71.09004739336493,
+71.09004739336493: A5~71.09004739336493 + D4~71.09004739336493,
+71.09004739336493: A5~71.09004739336493 + D4~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + G5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + G5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + F5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + F5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + F5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + E5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + E5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + D5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + C5~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + B4~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + B4~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + A4~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + G4~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + G4~71.09004739336493 + F4~71.09004739336493,
+71.09004739336493: D4~71.09004739336493 + F4~71.09004739336493 + E4~71.09004739336493,
+995.260663507109`;
+const playback = playTune(myTune, Infinity);
 
 setLegend(
   [
@@ -40,6 +121,26 @@ setLegend(
 ......6666......
 ......5..5......
 ......5..5......`,
+  ],
+  [
+    upSideDownPlayer,
+    bitmap`
+......5..5......
+......5..5......
+......6666......
+....6.6666.6....
+....6.6666.6....
+....66666666....
+.......99.......
+......9999......
+.....999999.....
+.....909909.....
+....44DDDD44....
+....94DDDD49....
+.....4DDDD4.....
+......4444......
+................
+................`,
   ],
   [
     floor,
@@ -82,16 +183,37 @@ CCCCCCCCCCCCCCCC`,
 1111111111111111
 1111111111111111`,
   ],
+  [
+    black,
+    bitmap`
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000`,
+  ],
 );
 
 let layer = [
-  [".....ffff"],
-  ["........."],
-  ["........."],
-  ["..p......"],
-  [".....f..."],
-  ["ffff....."],
+  ["ccccccccc"],
+  ["ccccccccc"],
+  ["ccccccccc"],
+  ["ccccccccc"],
+  ["ccccccccc"],
+  ["ccccccccc"],
 ];
+
 const levels = [
   map`
 ${layer[0]}
@@ -118,12 +240,213 @@ rfrrrrrfrfrfrfrrfr
 rfrrrrrfrrffrfrfrr
 rfffffrfrrffrffrrr
 rrrrrrrrrrrrrrrrrr`,
+  map`
+.........
+.........
+.........
+.........
+.........
+.........
+.........
+.........
+.........`,
 ];
 let level = 0;
 let currentLevel = levels[level];
 setMap(currentLevel);
 setSolids([player, floor]);
 
+const changeCharcterPostion = (dir) => {
+  if (dir === "b") {
+    setLegend(
+      [
+        player,
+        bitmap`
+......5..5......
+......5..5......
+......6666......
+....6.6666.6....
+....6.6666.6....
+....66666666....
+.......99.......
+......9999......
+.....999999.....
+.....909909.....
+....44DDDD44....
+....94DDDD49....
+.....4DDDD4.....
+......4444......
+................
+................`,
+      ],
+      [
+        floor,
+        bitmap`
+
+CCCCCCCCCCCCCCCC
+C99999999999999C
+C9CCCCCCCCCCCC9C
+C9C9999999999C9C
+C9C9CCCCCCCC9C9C
+C9C9C999999C9C9C
+C9C9C9CCCC9C9C9C
+C9C9C9C99C9C9C9C
+C9C9C9C99C9C9C9C
+C9C9C9CCCC9C9C9C
+C9C9C999999C9C9C
+C9C9CCCCCCCC9C9C
+C9C9999999999C9C
+C9CCCCCCCCCCCC9C
+C99999999999999C
+CCCCCCCCCCCCCCCC`,
+      ],
+      [
+        red,
+        bitmap`
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111`,
+      ],
+      [
+        black,
+        bitmap`
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000`,
+      ],
+    );
+  } else {
+    setLegend(
+      [
+        player,
+        bitmap`
+................
+................
+......4444......
+.....4DDDD4.....
+....94DDDD49....
+....44DDDD44....
+.....909909.....
+.....999999.....
+......9999......
+.......99.......
+....66666666....
+....6.6666.6....
+....6.6666.6....
+......6666......
+......5..5......
+......5..5......`,
+      ],
+      [
+        upSideDownPlayer,
+        bitmap`
+......5..5......
+......5..5......
+......6666......
+....6.6666.6....
+....6.6666.6....
+....66666666....
+.......99.......
+......9999......
+.....999999.....
+.....909909.....
+....44DDDD44....
+....94DDDD49....
+.....4DDDD4.....
+......4444......
+................
+................`,
+      ],
+      [
+        floor,
+        bitmap`
+
+CCCCCCCCCCCCCCCC
+C99999999999999C
+C9CCCCCCCCCCCC9C
+C9C9999999999C9C
+C9C9CCCCCCCC9C9C
+C9C9C999999C9C9C
+C9C9C9CCCC9C9C9C
+C9C9C9C99C9C9C9C
+C9C9C9C99C9C9C9C
+C9C9C9CCCC9C9C9C
+C9C9C999999C9C9C
+C9C9CCCCCCCC9C9C
+C9C9999999999C9C
+C9CCCCCCCCCCCC9C
+C99999999999999C
+CCCCCCCCCCCCCCCC`,
+      ],
+      [
+        red,
+        bitmap`
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111`,
+      ],
+      [
+        black,
+        bitmap`
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000`,
+      ],
+    );
+  }
+};
 const genNextPlat = (id) => {
   counter += 1;
   //console.log("counter", counter)
@@ -151,8 +474,17 @@ const genNextPlat = (id) => {
 const moveP = (direction) => {
   let pRow = -1;
   let pCol = -1;
+
+  // Find the position of 'p' or 'b'
   for (let i = 0; i < layer.length; i++) {
     let col = layer[i][0].indexOf("p");
+    if (col !== -1) {
+      pRow = i;
+      pCol = col;
+      break;
+    }
+
+    col = layer[i][0].indexOf("b");
     if (col !== -1) {
       pRow = i;
       pCol = col;
@@ -161,10 +493,12 @@ const moveP = (direction) => {
   }
 
   if (pRow === -1 || pCol === -1) {
+    // Neither 'p' nor 'b' is found
     return layer;
   }
 
-  let newLayer = layer.map((row) => [row[0].split("").join("")]);
+  // Make a deep copy of the layer
+  let newLayer = layer.map((row) => [row[0]]);
 
   let newRow = direction === "up" ? pRow - 1 : pRow + 1;
 
@@ -173,26 +507,47 @@ const moveP = (direction) => {
     newRow < layer.length &&
     newLayer[newRow][0][pCol] !== "f"
   ) {
-    // Move 'p'
-    newLayer[pRow][0] = newLayer[pRow][0].replace("p", ".");
-    newLayer[newRow][0] =
-      newLayer[newRow][0].substr(0, pCol) +
-      "p" +
-      newLayer[newRow][0].substr(pCol + 1);
+    // Move 'p' or 'b' to the new row
+    if (newLayer[pRow][0][pCol] === "p") {
+      newLayer[newRow][0] =
+        newLayer[newRow][0].substr(0, pCol) +
+        "p" +
+        newLayer[newRow][0].substr(pCol + 1);
+    } else {
+      newLayer[newRow][0] =
+        newLayer[newRow][0].substr(0, pCol) +
+        "b" +
+        newLayer[newRow][0].substr(pCol + 1);
+    }
+    newLayer[pRow][0] =
+      newLayer[pRow][0].substr(0, pCol) +
+      "." +
+      newLayer[pRow][0].substr(pCol + 1);
   }
 
   return newLayer;
 };
+
 const endGame = () => {
   setMap(levels[1]);
   hasGameEnded = true;
+  playback.end();
+  playTune(die, 1);
 };
 const checkIfPlayerLost = () => {
   setTimeout(() => {
-    if (gravity === "up" && layer[0][0].includes("p")) {
-      endGame();
-    } else if (gravity === "down" && layer[5][0].includes("p")) {
-      endGame();
+    if (!hasGameEnded) {
+      if (
+        gravity === "up" &&
+        (layer[0][0].includes("p") || layer[0][0].includes("b"))
+      ) {
+        endGame();
+      } else if (
+        gravity === "down" &&
+        (layer[5][0].includes("p") || layer[0][0].includes("b"))
+      ) {
+        endGame();
+      }
     }
   }, 1000);
 };
@@ -202,10 +557,12 @@ const moveTheBackGround = () => {
     for (let i = 0; i < layer.length; i++) {
       const ogStr = layer[i][0];
       let newStr = "";
-      if (ogStr.includes("p")) {
+      if (ogStr.includes("p") || ogStr.includes("b")) {
         if (ogStr[3] === "f") {
+          if (!hasGameEnded) {
+            endGame();
+          }
           //console.log("touch")
-          endGame();
         }
         newStr = `${ogStr[1]}${ogStr[3]}${ogStr[2]}${ogStr[4]}${ogStr[5]}${ogStr[6]}${ogStr[7]}${ogStr[8]}${genNextPlat(i)}`;
         //console.log(newStr)
@@ -234,7 +591,6 @@ ${layer[5]}`;
     //console.log("layer", layer);
   }, speed);
 };
-moveTheBackGround();
 
 const makeThePlayerMove = () => {
   //console.log("makeTheMove")
@@ -248,24 +604,39 @@ const makeThePlayerMove = () => {
     makeThePlayerMove();
   }, speed);
 };
-makeThePlayerMove();
 
 const increaseSpeed = () => {
   setTimeout(() => {
     speed -= 5;
-    console.log(speed);
+    //console.log(speed)
     increaseSpeed();
-  }, 350);
+  }, 450);
 };
-increaseSpeed();
+
+const makeTheGameStart = () => {
+  layer = [
+    [".....ffff"],
+    ["........."],
+    ["........."],
+    ["..p......"],
+    [".....f..."],
+    ["ffffff..."],
+  ];
+  moveTheBackGround();
+  makeThePlayerMove();
+  increaseSpeed();
+};
 
 onInput("w", () => {
   gravity = "up";
+  changeCharcterPostion("b");
   layer = moveP("up");
 });
 
 onInput("s", () => {
   gravity = "down";
+  changeCharcterPostion("p");
+  console.log("layer", layer);
   layer = moveP("down");
 });
 
