@@ -10,12 +10,14 @@ https://sprig.hackclub.com/gallery/getting_started
 
 const player = "p";
 const floor = "f";
+const red = "r";
 let counter = 0;
 let platform = 0;
 let lenCounter = 0;
 let lenCounterLimit = 5;
 let gravity = "up";
-let speed = 500;
+let speed = 300;
+let hasGameEnded = false;
 //console.log("resetting counter")
 
 setLegend(
@@ -60,6 +62,26 @@ C9CCCCCCCCCCCC9C
 C99999999999999C
 CCCCCCCCCCCCCCCC`,
   ],
+  [
+    red,
+    bitmap`
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111`,
+  ],
 );
 
 let layer = [
@@ -78,6 +100,24 @@ ${layer[2]}
 ${layer[3]}
 ${layer[4]}
 ${layer[5]}`,
+  map`
+rrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrr
+rfffffrfrrfrfffffr
+rrrfrrrfrrfrfrrrrr
+rrrfrrrffffrfrrrrr
+rrrfrrrfrrfrfffffr
+rrrfrrrfrrfrfrrrrr
+rrrfrrrfrrfrfffffr
+rrrrrrrrrrrrrrrrrr
+rfffffrffrrfrffrrr
+rfrrrrrffrrfrfrfrr
+rfrrrrrfrfrfrfrrfr
+rfffffrfrfrfrfrrfr
+rfrrrrrfrfrfrfrrfr
+rfrrrrrfrrffrfrfrr
+rfffffrfrrffrffrrr
+rrrrrrrrrrrrrrrrrr`,
 ];
 let level = 0;
 let currentLevel = levels[level];
@@ -101,7 +141,7 @@ const genNextPlat = (id) => {
     //console.log("platform", platform)
   }
 
-  console.log("check vals", id, platform);
+  //console.log("check vals", id, platform)
   if (id === platform) {
     return "f";
   } else {
@@ -143,6 +183,19 @@ const moveP = (direction) => {
 
   return newLayer;
 };
+const endGame = () => {
+  setMap(levels[1]);
+  hasGameEnded = true;
+};
+const checkIfPlayerLost = () => {
+  setTimeout(() => {
+    if (gravity === "up" && layer[0][0].includes("p")) {
+      endGame();
+    } else if (gravity === "down" && layer[5][0].includes("p")) {
+      endGame();
+    }
+  }, 1000);
+};
 
 const moveTheBackGround = () => {
   setTimeout(() => {
@@ -150,6 +203,10 @@ const moveTheBackGround = () => {
       const ogStr = layer[i][0];
       let newStr = "";
       if (ogStr.includes("p")) {
+        if (ogStr[3] === "f") {
+          //console.log("touch")
+          endGame();
+        }
         newStr = `${ogStr[1]}${ogStr[3]}${ogStr[2]}${ogStr[4]}${ogStr[5]}${ogStr[6]}${ogStr[7]}${ogStr[8]}${genNextPlat(i)}`;
         //console.log(newStr)
       } else {
@@ -169,7 +226,10 @@ ${layer[3]}
 ${layer[4]}
 ${layer[5]}`;
     //console.log("layer", currentLevel)
-    setMap(currentLevel);
+    if (!hasGameEnded) {
+      setMap(currentLevel);
+    }
+    checkIfPlayerLost();
     moveTheBackGround();
     //console.log("layer", layer);
   }, speed);
@@ -177,7 +237,7 @@ ${layer[5]}`;
 moveTheBackGround();
 
 const makeThePlayerMove = () => {
-  console.log("makeTheMove");
+  //console.log("makeTheMove")
   setTimeout(() => {
     if (gravity === "up") {
       //getFirst(player).y -= 1
@@ -189,6 +249,15 @@ const makeThePlayerMove = () => {
   }, speed);
 };
 makeThePlayerMove();
+
+const increaseSpeed = () => {
+  setTimeout(() => {
+    speed -= 5;
+    console.log(speed);
+    increaseSpeed();
+  }, 350);
+};
+increaseSpeed();
 
 onInput("w", () => {
   gravity = "up";
