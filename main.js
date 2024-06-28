@@ -2,10 +2,10 @@
 First time? Check out the tutorial game:
 https://sprig.hackclub.com/gallery/getting_started
 
-@title:
-@author:
-@tags: []
-@addedOn: 2024-00-00
+@title: UpSideDown
+@author: Sidak08
+@tags: ['endless', 'classic', 'fun']
+@addedOn: 2024-06-26
 */
 
 const player = "p";
@@ -20,7 +20,8 @@ let lenCounterLimit = 5;
 let gravity = "down";
 let speed = 300;
 let hasGameEnded = false;
-let timeTillStart = 5000;
+let timeTillStart = 300;
+let score = 0;
 //console.log("resetting counter")
 
 addText(
@@ -37,7 +38,7 @@ Do not hit them
 
 or fall in the void
 
-game start in ${timeTillStart / 10}
+game start in ${timeTillStart}
   `,
   {
     x: 1,
@@ -223,23 +224,23 @@ ${layer[3]}
 ${layer[4]}
 ${layer[5]}`,
   map`
-rrrrrrrrrrrrrrrrrr
-rrrrrrrrrrrrrrrrrr
-rfffffrfrrfrfffffr
-rrrfrrrfrrfrfrrrrr
-rrrfrrrffffrfrrrrr
-rrrfrrrfrrfrfffffr
-rrrfrrrfrrfrfrrrrr
-rrrfrrrfrrfrfffffr
-rrrrrrrrrrrrrrrrrr
-rfffffrffrrfrffrrr
-rfrrrrrffrrfrfrfrr
-rfrrrrrfrfrfrfrrfr
-rfffffrfrfrfrfrrfr
-rfrrrrrfrfrfrfrrfr
-rfrrrrrfrrffrfrfrr
-rfffffrfrrffrffrrr
-rrrrrrrrrrrrrrrrrr`,
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr
+rrrrrrrrrrrrrrrrrrrr`,
   map`
 .........
 .........
@@ -447,6 +448,7 @@ CCCCCCCCCCCCCCCC`,
     );
   }
 };
+
 const genNextPlat = (id) => {
   counter += 1;
   //console.log("counter", counter)
@@ -471,6 +473,7 @@ const genNextPlat = (id) => {
     return ".";
   }
 };
+
 const moveP = (direction) => {
   let pRow = -1;
   let pCol = -1;
@@ -529,11 +532,31 @@ const moveP = (direction) => {
 };
 
 const endGame = () => {
-  setMap(levels[1]);
-  hasGameEnded = true;
-  playback.end();
-  playTune(die, 1);
+  setTimeout(() => {
+    hasGameEnded = true;
+    setMap(levels[1]);
+    playback.end();
+    playTune(die, 1);
+    clearText();
+    addText(
+      `
+    GG bro
+
+But you kind lost
+
+so you score is
+
+      ${score}
+  `,
+      {
+        x: 2,
+        y: 3,
+        color: color`2`,
+      },
+    );
+  }, speed);
 };
+
 const checkIfPlayerLost = () => {
   setTimeout(() => {
     if (!hasGameEnded) {
@@ -614,18 +637,75 @@ const increaseSpeed = () => {
 };
 
 const makeTheGameStart = () => {
+  clearText();
   layer = [
     [".....ffff"],
     ["........."],
     ["........."],
     ["..p......"],
-    [".....f..."],
-    ["ffffff..."],
+    ["........."],
+    ["fffffffff"],
   ];
   moveTheBackGround();
   makeThePlayerMove();
   increaseSpeed();
+  countScore();
 };
+
+const countScore = () => {
+  setTimeout(() => {
+    if (!hasGameEnded) {
+      score += 10;
+      clearText();
+      addText(
+        `
+score: ${score}
+  `,
+        {
+          x: 1,
+          y: 1,
+          color: color`5`,
+        },
+      );
+    }
+    countScore();
+  }, 100);
+};
+
+const countDown = () => {
+  setTimeout(() => {
+    if (timeTillStart === 0) {
+      makeTheGameStart();
+    } else {
+      timeTillStart = timeTillStart - 1;
+      clearText();
+      addText(
+        `
+    How To Play
+
+W to flip gravity
+
+S for opposite
+
+walk on/under block
+
+Do not hit them
+
+or fall in the void
+
+game start in ${timeTillStart / 100}
+  `,
+        {
+          x: 1,
+          y: 1,
+          color: color`2`,
+        },
+      );
+      countDown();
+    }
+  }, 10);
+};
+countDown();
 
 onInput("w", () => {
   gravity = "up";
