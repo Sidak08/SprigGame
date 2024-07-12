@@ -9,23 +9,23 @@ https://sprig.hackclub.com/gallery/getting_started
 */
 
 const player = "p";
-const upSideDownPlayer = "b";
+const upSideDownPlayer = "b"
 const floor = "f";
-const red = "r";
-const black = "c";
-let counter = 0;
-let platform = 0;
-let lenCounter = 0;
-let lenCounterLimit = 5;
-let gravity = "down";
-let speed = 300;
-let hasGameEnded = false;
-let timeTillStart = 300;
-let score = 0;
+const red = "r"
+const black = "c"
+let counter = 0
+let platform = 0
+let lenCounter = 0
+let lenCounterLimit = 5
+let gravity = "down"
+let speed = 300
+let hasGameEnded = false
+let timeTillStart = 10
+let score = 0
 //console.log("resetting counter")
 
 addText(
-  `
+  ` 
     How To Play
 
 W to flip gravity
@@ -34,18 +34,16 @@ S for opposite
 
 walk on/under block
 
-Do not hit them
+Do not hit them 
 
 or fall in the void
 
 game start in ${timeTillStart}
-  `,
-  {
+  `, {
     x: 1,
     y: 1,
-    color: color`2`,
-  },
-);
+    color: color`2`
+  })
 
 const myTune = tune`
 100: B5^100 + E4~100,
@@ -79,8 +77,8 @@ const myTune = tune`
 100: D4~100 + A5^100 + A4-100 + E5~100 + B5~100,
 100: E4~100 + G5^100 + B5~100 + A5~100,
 100: F4~100 + F5^100 + G5~100,
-100: G4~100 + E5^100 + G5~100 + F5~100`;
-const die = tune`
+100: G4~100 + E5^100 + G5~100 + F5~100`
+const die = tune `
 71.09004739336493,
 71.09004739336493: A5~71.09004739336493 + D4~71.09004739336493,
 71.09004739336493: A5~71.09004739336493 + D4~71.09004739336493,
@@ -99,8 +97,9 @@ const die = tune`
 71.09004739336493: D4~71.09004739336493 + G4~71.09004739336493,
 71.09004739336493: D4~71.09004739336493 + G4~71.09004739336493 + F4~71.09004739336493,
 71.09004739336493: D4~71.09004739336493 + F4~71.09004739336493 + E4~71.09004739336493,
-995.260663507109`;
+995.260663507109`
 const playback = playTune(myTune, Infinity);
+
 
 setLegend(
   [
@@ -184,9 +183,7 @@ CCCCCCCCCCCCCCCC`,
 1111111111111111
 1111111111111111`,
   ],
-  [
-    black,
-    bitmap`
+  [black, bitmap`
 0000000000000000
 0000000000000000
 0000000000000000
@@ -202,8 +199,7 @@ CCCCCCCCCCCCCCCC`,
 0000000000000000
 0000000000000000
 0000000000000000
-0000000000000000`,
-  ],
+0000000000000000`]
 );
 
 let layer = [
@@ -213,7 +209,7 @@ let layer = [
   ["ccccccccc"],
   ["ccccccccc"],
   ["ccccccccc"],
-];
+]
 
 const levels = [
   map`
@@ -250,7 +246,8 @@ rrrrrrrrrrrrrrrrrrrr`,
 .........
 .........
 .........
-.........`,
+.........`
+
 ];
 let level = 0;
 let currentLevel = levels[level];
@@ -321,9 +318,7 @@ CCCCCCCCCCCCCCCC`,
 1111111111111111
 1111111111111111`,
       ],
-      [
-        black,
-        bitmap`
+      [black, bitmap`
 0000000000000000
 0000000000000000
 0000000000000000
@@ -339,9 +334,8 @@ CCCCCCCCCCCCCCCC`,
 0000000000000000
 0000000000000000
 0000000000000000
-0000000000000000`,
-      ],
-    );
+0000000000000000`]
+    )
   } else {
     setLegend(
       [
@@ -425,9 +419,7 @@ CCCCCCCCCCCCCCCC`,
 1111111111111111
 1111111111111111`,
       ],
-      [
-        black,
-        bitmap`
+      [black, bitmap`
 0000000000000000
 0000000000000000
 0000000000000000
@@ -443,22 +435,22 @@ CCCCCCCCCCCCCCCC`,
 0000000000000000
 0000000000000000
 0000000000000000
-0000000000000000`,
-      ],
-    );
+0000000000000000`]
+    )
   }
-};
+}
 
 const genNextPlat = (id) => {
-  counter += 1;
+
+  counter += 1
   //console.log("counter", counter)
   if (counter == 6) {
-    counter = 0;
-    lenCounter += 1;
+    counter = 0
+    lenCounter += 1
 
     if (lenCounterLimit === lenCounter) {
-      lenCounterLimit = Math.floor(Math.random() * 3) + 2;
-      lenCounter = 0;
+      lenCounterLimit = (Math.floor(Math.random() * 3)) + 2
+      lenCounter = 0
       platform = Math.floor(Math.random() * 6);
     }
 
@@ -466,13 +458,15 @@ const genNextPlat = (id) => {
     //console.log("platform", platform)
   }
 
-  //console.log("check vals", id, platform)
+  //console.log("check vals", id, platform) 
   if (id === platform) {
-    return "f";
+    return "f"
   } else {
-    return ".";
+    return "."
   }
-};
+
+
+}
 
 const moveP = (direction) => {
   let pRow = -1;
@@ -480,14 +474,14 @@ const moveP = (direction) => {
 
   // Find the position of 'p' or 'b'
   for (let i = 0; i < layer.length; i++) {
-    let col = layer[i][0].indexOf("p");
+    let col = layer[i][0].indexOf('p');
     if (col !== -1) {
       pRow = i;
       pCol = col;
       break;
     }
 
-    col = layer[i][0].indexOf("b");
+    col = layer[i][0].indexOf('b');
     if (col !== -1) {
       pRow = i;
       pCol = col;
@@ -501,75 +495,55 @@ const moveP = (direction) => {
   }
 
   // Make a deep copy of the layer
-  let newLayer = layer.map((row) => [row[0]]);
+  let newLayer = layer.map(row => [row[0]]);
 
-  let newRow = direction === "up" ? pRow - 1 : pRow + 1;
+  let newRow = direction === 'up' ? pRow - 1 : pRow + 1;
 
-  if (
-    newRow >= 0 &&
-    newRow < layer.length &&
-    newLayer[newRow][0][pCol] !== "f"
-  ) {
+  if (newRow >= 0 && newRow < layer.length && newLayer[newRow][0][pCol] !== 'f') {
     // Move 'p' or 'b' to the new row
-    if (newLayer[pRow][0][pCol] === "p") {
-      newLayer[newRow][0] =
-        newLayer[newRow][0].substr(0, pCol) +
-        "p" +
-        newLayer[newRow][0].substr(pCol + 1);
+    if (newLayer[pRow][0][pCol] === 'p') {
+      newLayer[newRow][0] = newLayer[newRow][0].substr(0, pCol) + 'p' + newLayer[newRow][0].substr(pCol + 1);
     } else {
-      newLayer[newRow][0] =
-        newLayer[newRow][0].substr(0, pCol) +
-        "b" +
-        newLayer[newRow][0].substr(pCol + 1);
+      newLayer[newRow][0] = newLayer[newRow][0].substr(0, pCol) + 'b' + newLayer[newRow][0].substr(pCol + 1);
     }
-    newLayer[pRow][0] =
-      newLayer[pRow][0].substr(0, pCol) +
-      "." +
-      newLayer[pRow][0].substr(pCol + 1);
+    newLayer[pRow][0] = newLayer[pRow][0].substr(0, pCol) + '.' + newLayer[pRow][0].substr(pCol + 1);
   }
 
   return newLayer;
-};
+}
 
 const endGame = () => {
   setTimeout(() => {
-    hasGameEnded = true;
-    setMap(levels[1]);
-    playback.end();
-    playTune(die, 1);
-    clearText();
+    hasGameEnded = true
+    setMap(levels[1])
+    playback.end()
+    playTune(die, 1)
+    clearText()
     addText(
-      `
-    GG bro
+      ` 
+    GG bro 
 
 But you kind lost
 
-so you score is
+so you score is 
 
       ${score}
-  `,
-      {
+  `, {
         x: 2,
         y: 3,
-        color: color`2`,
-      },
-    );
-  }, speed);
-};
+        color: color`2`
+      })
+  }, speed)
+
+}
 
 const checkIfPlayerLost = () => {
   setTimeout(() => {
     if (!hasGameEnded) {
-      if (
-        gravity === "up" &&
-        (layer[0][0].includes("p") || layer[0][0].includes("b"))
-      ) {
+      if (gravity === "up" && (layer[0][0].includes("p") || layer[0][0].includes("b"))) {
         endGame();
-      } else if (
-        gravity === "down" &&
-        (layer[5][0].includes("p") || layer[0][0].includes("b"))
-      ) {
-        endGame();
+      } else if (gravity === "down" && (layer[5][0].includes("p") || layer[0][0].includes("b"))) {
+        endGame()
       }
     }
   }, 1000);
@@ -580,14 +554,14 @@ const moveTheBackGround = () => {
     for (let i = 0; i < layer.length; i++) {
       const ogStr = layer[i][0];
       let newStr = "";
-      if (ogStr.includes("p") || ogStr.includes("b")) {
+      if (ogStr.includes('p') || ogStr.includes('b')) {
         if (ogStr[3] === "f") {
           if (!hasGameEnded) {
-            endGame();
+            endGame()
           }
           //console.log("touch")
         }
-        newStr = `${ogStr[1]}${ogStr[3]}${ogStr[2]}${ogStr[4]}${ogStr[5]}${ogStr[6]}${ogStr[7]}${ogStr[8]}${genNextPlat(i)}`;
+        newStr = `${ogStr[1]}${ogStr[3]}${ogStr[2]}${ogStr[4]}${ogStr[5]}${ogStr[6]}${ogStr[7]}${ogStr[8]}${genNextPlat(i)}`
         //console.log(newStr)
       } else {
         for (let j = 1; j < ogStr.length; j++) {
@@ -609,7 +583,7 @@ ${layer[5]}`;
     if (!hasGameEnded) {
       setMap(currentLevel);
     }
-    checkIfPlayerLost();
+    checkIfPlayerLost()
     moveTheBackGround();
     //console.log("layer", layer);
   }, speed);
@@ -620,24 +594,24 @@ const makeThePlayerMove = () => {
   setTimeout(() => {
     if (gravity === "up") {
       //getFirst(player).y -= 1
-      layer = moveP("up");
+      layer = moveP("up")
     } else {
-      layer = moveP("down");
+      layer = moveP("down")
     }
-    makeThePlayerMove();
-  }, speed);
-};
+    makeThePlayerMove()
+  }, speed)
+}
 
-const increaseSpeed = () => {
-  setTimeout(() => {
-    speed -= 5;
-    //console.log(speed)
-    increaseSpeed();
-  }, 450);
-};
+// const increaseSpeed = () => {
+//   setTimeout(() => {
+//     speed -= 5
+//     //console.log(speed)
+//     increaseSpeed()
+//   }, 450);
+// }
 
 const makeTheGameStart = () => {
-  clearText();
+  clearText()
   layer = [
     [".....ffff"],
     ["........."],
@@ -645,42 +619,41 @@ const makeTheGameStart = () => {
     ["..p......"],
     ["........."],
     ["fffffffff"],
-  ];
-  moveTheBackGround();
-  makeThePlayerMove();
-  increaseSpeed();
-  countScore();
-};
+  ]
+  moveTheBackGround()
+  makeThePlayerMove()
+  //increaseSpeed()
+  countScore()
+}
 
 const countScore = () => {
   setTimeout(() => {
     if (!hasGameEnded) {
-      score += 10;
-      clearText();
+      score += 10
+      clearText()
       addText(
-        `
+        ` 
 score: ${score}
-  `,
-        {
+  `, {
           x: 1,
           y: 1,
-          color: color`5`,
-        },
-      );
+          color: color`5`
+        })
     }
-    countScore();
-  }, 100);
-};
+    countScore()
+  }, 100)
+
+}
 
 const countDown = () => {
   setTimeout(() => {
     if (timeTillStart === 0) {
-      makeTheGameStart();
+      makeTheGameStart()
     } else {
-      timeTillStart = timeTillStart - 1;
-      clearText();
+      timeTillStart = timeTillStart - 1
+      clearText()
       addText(
-        `
+        ` 
     How To Play
 
 W to flip gravity
@@ -689,36 +662,53 @@ S for opposite
 
 walk on/under block
 
-Do not hit them
+Do not hit them 
 
 or fall in the void
 
 game start in ${timeTillStart / 100}
-  `,
-        {
+  `, {
           x: 1,
           y: 1,
-          color: color`2`,
-        },
-      );
-      countDown();
+          color: color`2`
+        })
+      countDown()
     }
-  }, 10);
-};
-countDown();
+
+  }, 10)
+}
+countDown()
+
 
 onInput("w", () => {
-  gravity = "up";
-  changeCharcterPostion("b");
-  layer = moveP("up");
+  gravity = "up"
+  changeCharcterPostion("b")
+  layer = moveP("up")
 });
 
 onInput("s", () => {
-  gravity = "down";
-  changeCharcterPostion("p");
-  console.log("layer", layer);
-  layer = moveP("down");
+  gravity = "down"
+  changeCharcterPostion("p")
+  console.log("layer", layer)
+  layer = moveP("down")
 });
+onInput("i", () => {
+  gravity = "down"
+  changeCharcterPostion("p")
+  console.log("layer", layer)
+  layer = moveP("down")
+});
+onInput("l", () => {
+  playback.end()
+});
+
+onInput("k", () => {
+  score = 0
+  speed = 300
+  makeTheGameStart()
+  hasGameEnded = false
+});
+
 
 setPushables({
   [player]: [],
