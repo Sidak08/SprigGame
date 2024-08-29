@@ -51,7 +51,7 @@ The game will end if:
 Upon ending, your final score will be displayed.
 
 ## Starting the Game
-To start playing **UpSideDown**, visit [this page](https://sprig.hackclub.com/~/QMWahe711PwsgI1kC4kg) and press play.
+To start playing **UpSideDown**, visit this [page](https://sprig.hackclub.com/gallery/UpSideDown) and press play.
 
 
 Good luck, and have fun!
