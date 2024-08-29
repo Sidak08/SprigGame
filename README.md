@@ -30,11 +30,6 @@
     - Normal (`p`): Character with normal gravity.
     - Upside-down (`b`): Character with reversed gravity.
 
-- **Obstacles and Platforms**:
-  - **Floor (`f`)**: The main platform the character walks on.
-  - **Red Blocks (`r`)**: Obstacle blocks that must be avoided.
-  - **Black Blocks (`c`)**: Another type of obstacle.
-
 - **Sounds**:
   - **Background Music**: A tune plays in the background during the game.
   - **Game Over Sound**: Plays when the game ends.
@@ -53,5 +48,7 @@ Upon ending, your final score will be displayed.
 ## Starting the Game
 To start playing **UpSideDown**, visit this [page](https://sprig.hackclub.com/gallery/UpSideDown) and press play.
 
+## ScreenShots
+![screenshot](https://github.com/Sidak08/SprigGame/blob/main/screenshots/Screen%20Shot%202024-08-29%20at%207.20.15%20PM.png)
 
 Good luck, and have fun!
